@@ -6,7 +6,6 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class UploadImage(
     val originalImageByteArray: ByteArray,
-    val regionOfInterestImageByteArray: ByteArray,
 ) : Parcelable {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -15,15 +14,11 @@ data class UploadImage(
         other as UploadImage
 
         if (!originalImageByteArray.contentEquals(other.originalImageByteArray)) return false
-        if (!regionOfInterestImageByteArray.contentEquals(other.regionOfInterestImageByteArray)) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        var result = originalImageByteArray.contentHashCode()
-        result = 31 * result + regionOfInterestImageByteArray.contentHashCode()
-        return result
+        return originalImageByteArray.contentHashCode()
     }
-
 }

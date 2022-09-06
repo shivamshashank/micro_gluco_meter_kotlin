@@ -51,7 +51,7 @@ fun RegistrationScreen(navigator: DestinationsNavigator) {
                             navigator.navigate(RecordsScreenDestination)
                         },
                     ) {
-                        Icon(Icons.Filled.Folder,"Records")
+                        Icon(Icons.Filled.Folder, "Records")
                     }
                 }
             )
@@ -86,7 +86,7 @@ fun RegistrationForm(navigator: DestinationsNavigator) {
         validateAge = if (age.isBlank()) false
         else age.toInt() in 1..99
 
-        validatePhoneNumber = phoneNumber.length == 10
+        validatePhoneNumber = phoneNumber.length == 1
 
         return validateName && validateAge && validatePhoneNumber
     }
@@ -223,28 +223,28 @@ fun RegistrationForm(navigator: DestinationsNavigator) {
 
         Button(
             onClick = {
-                      if (validateData(name, age, phoneNumber)) {
-                          if (gender == ""){
-                              Toast.makeText(context, validateGenderError, Toast.LENGTH_SHORT).show()
-                          } else {
-                              navigator.navigate(
-                                  UploadImageScreenDestination(
-                                      user = User(
-                                          name,
-                                          age,
-                                          gender,
-                                          phoneNumber,
-                                          "",
-                                      ),
-                                  ),
-                              )
+                if (validateData(name, age, phoneNumber)) {
+                    if (gender == "") {
+                        Toast.makeText(context, validateGenderError, Toast.LENGTH_SHORT).show()
+                    } else {
+                        navigator.navigate(
+                            UploadImageScreenDestination(
+                                user = User(
+                                    name,
+                                    age,
+                                    gender,
+                                    phoneNumber,
+                                    "",
+                                ),
+                            ),
+                        )
 
-                              name = ""
-                              gender = ""
-                              age = ""
-                              phoneNumber = ""
-                          }
-                      }
+                        name = ""
+                        gender = ""
+                        age = ""
+                        phoneNumber = ""
+                    }
+                }
             },
             modifier = Modifier
                 .fillMaxWidth(0.9f)

@@ -10,10 +10,14 @@ import androidx.compose.ui.Modifier
 import com.example.microglucometer.presentation.NavGraphs
 import com.example.microglucometer.ui.theme.MicroGlucoMeterTheme
 import com.ramcosta.composedestinations.DestinationsNavHost
+import com.slaviboy.composeunits.initSize
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // init device width and height
+        initSize()
 
         setContent {
             MicroGlucoMeterTheme {

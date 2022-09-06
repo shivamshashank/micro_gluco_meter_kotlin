@@ -27,6 +27,8 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import com.example.microglucometer.methods.ImageConversion
+import com.example.microglucometer.models.UploadImage
 import com.example.microglucometer.models.User
 import com.example.microglucometer.presentation.destinations.MultipleCropImageScreenDestination
 import com.ramcosta.composedestinations.annotation.Destination
@@ -73,9 +75,12 @@ fun UploadImageBody(
     ) { btm: Bitmap? ->
 
         btm?.let { it ->
+            val originalImageByteArray = ImageConversion().convertBitmapToByteArrays(it)
+
             navigator.navigate(
                 MultipleCropImageScreenDestination(
                     user,
+                    uploadImage = UploadImage(originalImageByteArray),
                 )
             )
         }
@@ -96,7 +101,16 @@ fun UploadImageBody(
                 }
             }
 
-            bitmap?.let { _ -> }
+            bitmap?.let { bitmap ->
+                val originalImageByteArray = ImageConversion().convertBitmapToByteArrays(bitmap)
+
+                navigator.navigate(
+                    MultipleCropImageScreenDestination(
+                        user,
+                        uploadImage = UploadImage(originalImageByteArray),
+                    )
+                )
+            }
         }
     }
 
