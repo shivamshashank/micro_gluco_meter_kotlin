@@ -27,12 +27,12 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
-import com.example.microglucometer.methods.ImageConversion
-import com.example.microglucometer.models.UploadImage
 import com.example.microglucometer.models.User
 import com.example.microglucometer.presentation.destinations.MultipleCropImageScreenDestination
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import java.io.File
+import java.io.FileOutputStream
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Destination
@@ -75,12 +75,16 @@ fun UploadImageBody(
     ) { btm: Bitmap? ->
 
         btm?.let { it ->
-            val originalImageByteArray = ImageConversion().convertBitmapToByteArrays(it)
+            val path = context.getExternalFilesDir(null)!!.absolutePath
+
+            val tempFile = File(path, "tempFileName.jpg")
+            val fileOutputStream = FileOutputStream(tempFile)
+            it.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream)
+            fileOutputStream.close()
 
             navigator.navigate(
                 MultipleCropImageScreenDestination(
                     user,
-                    uploadImage = UploadImage(originalImageByteArray),
                 )
             )
         }
@@ -102,12 +106,16 @@ fun UploadImageBody(
             }
 
             bitmap?.let { bitmap ->
-                val originalImageByteArray = ImageConversion().convertBitmapToByteArrays(bitmap)
+                val path = context.getExternalFilesDir(null)!!.absolutePath
+
+                val tempFile = File(path, "tempFileName.jpg")
+                val fileOutputStream = FileOutputStream(tempFile)
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream)
+                fileOutputStream.close()
 
                 navigator.navigate(
                     MultipleCropImageScreenDestination(
                         user,
-                        uploadImage = UploadImage(originalImageByteArray),
                     )
                 )
             }

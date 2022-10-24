@@ -1,6 +1,8 @@
 package com.example.microglucometer.presentation
 
 import android.annotation.SuppressLint
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.*
@@ -28,8 +30,6 @@ import androidx.compose.ui.unit.sp
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions
-import com.example.microglucometer.methods.ImageConversion
-import com.example.microglucometer.models.UploadImage
 import com.example.microglucometer.models.User
 import com.example.microglucometer.presentation.destinations.ReportsScreenDestination
 import com.example.microglucometer.ui.theme.Brown500
@@ -38,6 +38,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.slaviboy.composeunits.dh
 import com.slaviboy.composeunits.dw
+import java.io.File
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Destination
@@ -45,12 +46,16 @@ import com.slaviboy.composeunits.dw
 fun MultipleCropImageScreen(
     navigator: DestinationsNavigator,
     user: User,
-    uploadImage: UploadImage,
 ) {
-    val originalImageBitmap = ImageConversion()
-        .convertByteArraysToBitmap(uploadImage.originalImageByteArray)
-
     val context = LocalContext.current
+
+    val path = context.getExternalFilesDir(null)!!.absolutePath
+    val uploadImagePath = "$path/tempFileName.jpg"
+
+    val uploadImageBitmap = BitmapFactory.decodeFile(uploadImagePath)
+    val uploadImageUri = Uri.fromFile(File(path, "tempFileName.jpg"))
+
+    File(uploadImagePath).deleteOnExit()
 
     val stroke = Stroke(
         width = 2f,
@@ -62,15 +67,15 @@ fun MultipleCropImageScreen(
 
     val pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
 
-    val crop1 = rememberSaveable { mutableStateOf(originalImageBitmap) }
-    val crop2 = rememberSaveable { mutableStateOf(originalImageBitmap) }
-    val crop3 = rememberSaveable { mutableStateOf(originalImageBitmap) }
+    val crop1 = rememberSaveable { mutableStateOf(uploadImageBitmap) }
+    val crop2 = rememberSaveable { mutableStateOf(uploadImageBitmap) }
+    val crop3 = rememberSaveable { mutableStateOf(uploadImageBitmap) }
 
     val imageCropLauncher1 =
         rememberLauncherForActivityResult(CropImageContract()) { result ->
             if (result.isSuccessful) {
                 // use the cropped image
-                crop1.value = ImageConversion().convertUriToBitmap(context, result.uriContent!!)
+                crop1.value = result.getBitmap(context)
             } else {
                 // an error occurred cropping
                 val exception = result.error
@@ -82,7 +87,7 @@ fun MultipleCropImageScreen(
         rememberLauncherForActivityResult(CropImageContract()) { result ->
             if (result.isSuccessful) {
                 // use the cropped image
-                crop2.value = ImageConversion().convertUriToBitmap(context, result.uriContent!!)
+                crop2.value = result.getBitmap(context)
             } else {
                 // an error occurred cropping
                 val exception = result.error
@@ -94,7 +99,7 @@ fun MultipleCropImageScreen(
         rememberLauncherForActivityResult(CropImageContract()) { result ->
             if (result.isSuccessful) {
                 // use the cropped image
-                crop3.value = ImageConversion().convertUriToBitmap(context, result.uriContent!!)
+                crop3.value = result.getBitmap(context)
             } else {
                 // an error occurred cropping
                 val exception = result.error
@@ -127,7 +132,7 @@ fun MultipleCropImageScreen(
             ) {
                 Button(
                     onClick = {
-                        if (crop1.value == originalImageBitmap || crop2.value == originalImageBitmap || crop3.value == originalImageBitmap) {
+                        if (crop1.value == uploadImageBitmap || crop2.value == uploadImageBitmap || crop3.value == uploadImageBitmap) {
                             Toast
                                 .makeText(context, "Please crop all 3 Images", Toast.LENGTH_SHORT)
                                 .show()
@@ -162,7 +167,7 @@ fun MultipleCropImageScreen(
                 Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                if (crop1.value == originalImageBitmap) {
+                if (crop1.value == uploadImageBitmap) {
                     Box(Modifier.size(0.25.dw), contentAlignment = Alignment.Center) {
                         Canvas(modifier = Modifier.fillMaxSize()) {
                             drawRoundRect(color = Brown500, style = stroke)
@@ -171,10 +176,7 @@ fun MultipleCropImageScreen(
                             onClick = {
                                 imageCropLauncher1.launch(
                                     CropImageContractOptions(
-                                        ImageConversion().convertBitmapToUri(
-                                            context,
-                                            originalImageBitmap,
-                                        ),
+                                        uploadImageUri,
                                         CropImageOptions(),
                                     ),
                                 )
@@ -198,7 +200,7 @@ fun MultipleCropImageScreen(
                     )
                 }
 
-                if (crop2.value == originalImageBitmap) {
+                if (crop2.value == uploadImageBitmap) {
                     Box(Modifier.size(0.25.dw), contentAlignment = Alignment.Center) {
                         Canvas(modifier = Modifier.fillMaxSize()) {
                             drawRoundRect(color = Brown500, style = stroke)
@@ -207,10 +209,7 @@ fun MultipleCropImageScreen(
                             onClick = {
                                 imageCropLauncher2.launch(
                                     CropImageContractOptions(
-                                        ImageConversion().convertBitmapToUri(
-                                            context,
-                                            originalImageBitmap,
-                                        ),
+                                        uploadImageUri,
                                         CropImageOptions(),
                                     ),
                                 )
@@ -234,7 +233,7 @@ fun MultipleCropImageScreen(
                     )
                 }
 
-                if (crop3.value == originalImageBitmap) {
+                if (crop3.value == uploadImageBitmap) {
                     Box(Modifier.size(0.25.dw), contentAlignment = Alignment.Center) {
                         Canvas(modifier = Modifier.fillMaxSize()) {
                             drawRoundRect(color = Brown500, style = stroke)
@@ -243,10 +242,7 @@ fun MultipleCropImageScreen(
                             onClick = {
                                 imageCropLauncher3.launch(
                                     CropImageContractOptions(
-                                        ImageConversion().convertBitmapToUri(
-                                            context,
-                                            originalImageBitmap,
-                                        ),
+                                        uploadImageUri,
                                         CropImageOptions(),
                                     ),
                                 )
@@ -283,7 +279,7 @@ fun MultipleCropImageScreen(
             }
 
             Image(
-                bitmap = originalImageBitmap.asImageBitmap(),
+                bitmap = uploadImageBitmap.asImageBitmap(),
                 contentDescription = "Image",
                 alignment = Alignment.TopCenter,
                 modifier = Modifier
