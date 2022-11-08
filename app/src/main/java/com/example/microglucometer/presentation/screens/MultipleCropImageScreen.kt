@@ -126,9 +126,20 @@ fun MultipleCropImageScreen(
                                 .makeText(context, "Please crop all 3 Images", Toast.LENGTH_SHORT)
                                 .show()
                         } else {
+                            val imageMap: HashMap<String, String> =
+                                hashMapOf(
+                                    "image_string1" to crop1.value.toString(),
+                                    "image_string2" to crop2.value.toString(),
+                                    "image_string3" to crop3.value.toString(),
+                                )
+
                             navController.currentBackStackEntry?.savedStateHandle?.set(
                                 "user",
                                 user,
+                            )
+                            navController.currentBackStackEntry?.savedStateHandle?.set(
+                                "imageMap",
+                                imageMap,
                             )
                             navController.navigate(Screen.ReportsScreen.route)
                         }

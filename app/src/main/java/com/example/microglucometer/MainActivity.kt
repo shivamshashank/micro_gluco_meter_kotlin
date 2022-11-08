@@ -10,7 +10,9 @@ import androidx.compose.ui.Modifier
 import com.example.microglucometer.presentation.theme.MicroGlucoMeterTheme
 import com.example.microglucometer.utils.Navigation
 import com.slaviboy.composeunits.initSize
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

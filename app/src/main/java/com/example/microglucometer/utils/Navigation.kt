@@ -1,6 +1,5 @@
 package com.example.microglucometer.utils
 
-import android.graphics.Bitmap
 import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
@@ -31,7 +30,8 @@ fun Navigation() {
         }
         composable(route = Screen.MultipleCropImageScreen.route) {
             val user = navController.previousBackStackEntry?.savedStateHandle?.get<User>("user")
-            val imageUri = navController.previousBackStackEntry?.savedStateHandle?.get<Uri>("imageUri")
+            val imageUri =
+                navController.previousBackStackEntry?.savedStateHandle?.get<Uri>("imageUri")
             user?.let {
                 imageUri?.let {
                     MultipleCropImageScreen(navController, user, imageUri)
@@ -40,8 +40,14 @@ fun Navigation() {
         }
         composable(route = Screen.ReportsScreen.route) {
             val user = navController.previousBackStackEntry?.savedStateHandle?.get<User>("user")
+            val imageMap =
+                navController.previousBackStackEntry?.savedStateHandle?.get<HashMap<String, String>>(
+                    "imageMap"
+                )
             user?.let {
-                ReportsScreen(navController, user)
+                imageMap?.let {
+                    ReportsScreen(navController, user, imageMap)
+                }
             }
         }
     }

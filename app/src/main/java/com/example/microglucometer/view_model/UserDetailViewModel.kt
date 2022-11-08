@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.*
 import com.example.microglucometer.database.UserDetail
 import com.example.microglucometer.database.UserDetailDatabase
-import com.example.microglucometer.database.UserDetailRepository
+import com.example.microglucometer.repository.UserDetailRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
