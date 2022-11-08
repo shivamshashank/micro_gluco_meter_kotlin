@@ -3,15 +3,11 @@ package com.example.microglucometer.presentation.screens
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.ImageDecoder
 import android.net.Uri
-import android.os.Build
-import android.provider.MediaStore
+import android.os.Environment
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.launch
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -27,11 +23,14 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.navigation.NavController
+import com.example.microglucometer.BuildConfig
 import com.example.microglucometer.models.User
 import com.example.microglucometer.utils.Screen
 import java.io.File
-import java.io.FileOutputStream
+import java.util.*
+
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -68,21 +67,23 @@ fun UploadImageBody(
 
     var isCameraSelected = false
 
+    val cameraImageUri: Uri = FileProvider.getUriForFile(
+        context,
+        "${BuildConfig.APPLICATION_ID}.provider",
+        File("${context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)?.absolutePath}/${System.currentTimeMillis()}.jpg")
+    )
+
     val cameraLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.TakePicturePreview()
-    ) { btm: Bitmap? ->
-
-        btm?.let { it ->
-            val path = context.getExternalFilesDir(null)!!.absolutePath
-
-            val tempFile = File(path, "tempFileName.jpg")
-            val fileOutputStream = FileOutputStream(tempFile)
-            it.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream)
-            fileOutputStream.close()
-
+        contract = ActivityResultContracts.TakePicture(),
+    ) {
+        if (it) {
             navController.currentBackStackEntry?.savedStateHandle?.set(
                 "user",
                 user,
+            )
+            navController.currentBackStackEntry?.savedStateHandle?.set(
+                "imageUri",
+                cameraImageUri,
             )
             navController.navigate(Screen.MultipleCropImageScreen.route)
         }
@@ -91,32 +92,16 @@ fun UploadImageBody(
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
-        var bitmap: Bitmap? = null
-
         uri?.let {
-            if (!isCameraSelected) {
-                bitmap = if (Build.VERSION.SDK_INT < 28) {
-                    MediaStore.Images.Media.getBitmap(context.contentResolver, it)
-                } else {
-                    val source = ImageDecoder.createSource(context.contentResolver, it)
-                    ImageDecoder.decodeBitmap(source)
-                }
-            }
-
-            bitmap?.let { bitmap ->
-                val path = context.getExternalFilesDir(null)!!.absolutePath
-
-                val tempFile = File(path, "tempFileName.jpg")
-                val fileOutputStream = FileOutputStream(tempFile)
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream)
-                fileOutputStream.close()
-
-                navController.currentBackStackEntry?.savedStateHandle?.set(
-                    "user",
-                    user,
-                )
-                navController.navigate(Screen.MultipleCropImageScreen.route)
-            }
+            navController.currentBackStackEntry?.savedStateHandle?.set(
+                "user",
+                user,
+            )
+            navController.currentBackStackEntry?.savedStateHandle?.set(
+                "imageUri",
+                it,
+            )
+            navController.navigate(Screen.MultipleCropImageScreen.route)
         }
     }
 
@@ -125,7 +110,7 @@ fun UploadImageBody(
     ) { isGranted: Boolean ->
         if (isGranted) {
             if (isCameraSelected) {
-                cameraLauncher.launch()
+                cameraLauncher.launch(cameraImageUri)
             } else {
                 galleryLauncher.launch("image/*")
             }
@@ -148,7 +133,7 @@ fun UploadImageBody(
                         Manifest.permission.CAMERA,
                     ),
                     -> {
-                        cameraLauncher.launch()
+                        cameraLauncher.launch(cameraImageUri)
                     }
                     else -> {
                         isCameraSelected = true

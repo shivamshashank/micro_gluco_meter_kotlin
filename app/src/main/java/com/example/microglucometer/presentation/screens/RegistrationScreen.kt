@@ -83,7 +83,7 @@ fun RegistrationForm(navController: NavController) {
         validateAge = if (age.isBlank()) false
         else age.toInt() in 1..99
 
-        validatePhoneNumber = phoneNumber.length == 10
+        validatePhoneNumber = phoneNumber.length == 1
 
         return validateName && validateAge && validatePhoneNumber
     }
