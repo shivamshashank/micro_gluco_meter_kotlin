@@ -1,4 +1,4 @@
-package com.example.microglucometer.presentation
+package com.example.microglucometer.presentation.screens
 
 import android.annotation.SuppressLint
 import android.graphics.BitmapFactory
@@ -27,24 +27,22 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions
 import com.example.microglucometer.models.User
-import com.example.microglucometer.presentation.destinations.ReportsScreenDestination
-import com.example.microglucometer.ui.theme.Brown500
-import com.example.microglucometer.ui.theme.Brown700
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.example.microglucometer.presentation.theme.Brown500
+import com.example.microglucometer.presentation.theme.Brown700
+import com.example.microglucometer.utils.Screen
 import com.slaviboy.composeunits.dh
 import com.slaviboy.composeunits.dw
 import java.io.File
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
-@Destination
 @Composable
 fun MultipleCropImageScreen(
-    navigator: DestinationsNavigator,
+    navController: NavController,
     user: User,
 ) {
     val context = LocalContext.current
@@ -113,7 +111,7 @@ fun MultipleCropImageScreen(
                 title = { Text(text = "Crop Image") },
                 navigationIcon = {
                     IconButton(
-                        onClick = { navigator.navigateUp() }
+                        onClick = { navController.navigateUp() }
                     ) {
                         Icon(
                             imageVector = Icons.Filled.ArrowBack,
@@ -137,9 +135,11 @@ fun MultipleCropImageScreen(
                                 .makeText(context, "Please crop all 3 Images", Toast.LENGTH_SHORT)
                                 .show()
                         } else {
-                            navigator.navigate(
-                                ReportsScreenDestination(user)
+                            navController.currentBackStackEntry?.savedStateHandle?.set(
+                                "user",
+                                user,
                             )
+                            navController.navigate(Screen.ReportsScreen.route)
                         }
                     },
                     modifier = Modifier

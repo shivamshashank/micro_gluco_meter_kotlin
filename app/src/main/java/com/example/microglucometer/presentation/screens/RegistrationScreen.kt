@@ -1,4 +1,4 @@
-package com.example.microglucometer.presentation
+package com.example.microglucometer.presentation.screens
 
 import android.annotation.SuppressLint
 import android.widget.Toast
@@ -27,19 +27,16 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.microglucometer.models.User
-import com.example.microglucometer.presentation.destinations.RecordsScreenDestination
-import com.example.microglucometer.presentation.destinations.UploadImageScreenDestination
-import com.example.microglucometer.ui.theme.Brown200
-import com.example.microglucometer.ui.theme.Brown700
-import com.example.microglucometer.widgets.CustomOutlinedTextField
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.example.microglucometer.presentation.theme.Brown200
+import com.example.microglucometer.presentation.theme.Brown700
+import com.example.microglucometer.presentation.widgets.CustomOutlinedTextField
+import com.example.microglucometer.utils.Screen
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
-@Destination
 @Composable
-fun RegistrationScreen(navigator: DestinationsNavigator) {
+fun RegistrationScreen(navController: NavController) {
 
     Scaffold(
         topBar = {
@@ -48,7 +45,7 @@ fun RegistrationScreen(navigator: DestinationsNavigator) {
                 actions = {
                     IconButton(
                         onClick = {
-                            navigator.navigate(RecordsScreenDestination)
+                            navController.navigate(Screen.RecordsScreen.route)
                         },
                     ) {
                         Icon(Icons.Filled.Folder, "Records")
@@ -57,12 +54,12 @@ fun RegistrationScreen(navigator: DestinationsNavigator) {
             )
         }
     ) {
-        RegistrationForm(navigator)
+        RegistrationForm(navController)
     }
 }
 
 @Composable
-fun RegistrationForm(navigator: DestinationsNavigator) {
+fun RegistrationForm(navController: NavController) {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
 
@@ -86,7 +83,7 @@ fun RegistrationForm(navigator: DestinationsNavigator) {
         validateAge = if (age.isBlank()) false
         else age.toInt() in 1..99
 
-        validatePhoneNumber = phoneNumber.length == 1
+        validatePhoneNumber = phoneNumber.length == 10
 
         return validateName && validateAge && validatePhoneNumber
     }
@@ -227,17 +224,17 @@ fun RegistrationForm(navigator: DestinationsNavigator) {
                     if (gender == "") {
                         Toast.makeText(context, validateGenderError, Toast.LENGTH_SHORT).show()
                     } else {
-                        navigator.navigate(
-                            UploadImageScreenDestination(
-                                user = User(
-                                    name,
-                                    age,
-                                    gender,
-                                    phoneNumber,
-                                    "",
-                                ),
+                        navController.currentBackStackEntry?.savedStateHandle?.set(
+                            "user",
+                            User(
+                                name,
+                                age,
+                                gender,
+                                phoneNumber,
+                                "",
                             ),
                         )
+                        navController.navigate(Screen.UploadImageScreen.route)
 
                         name = ""
                         gender = ""

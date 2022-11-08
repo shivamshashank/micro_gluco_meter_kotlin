@@ -1,4 +1,4 @@
-package com.example.microglucometer.widgets
+package com.example.microglucometer.presentation.widgets
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions

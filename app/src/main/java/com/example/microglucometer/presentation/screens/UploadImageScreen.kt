@@ -1,4 +1,4 @@
-package com.example.microglucometer.presentation
+package com.example.microglucometer.presentation.screens
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -27,18 +27,16 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavController
 import com.example.microglucometer.models.User
-import com.example.microglucometer.presentation.destinations.MultipleCropImageScreenDestination
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.example.microglucometer.utils.Screen
 import java.io.File
 import java.io.FileOutputStream
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
-@Destination
 @Composable
 fun UploadImageScreen(
-    navigator: DestinationsNavigator,
+    navController: NavController,
     user: User,
 ) {
 
@@ -47,7 +45,7 @@ fun UploadImageScreen(
             TopAppBar(
                 title = { Text(text = "Upload Image") },
                 navigationIcon = {
-                    IconButton(onClick = { navigator.navigateUp() }) {
+                    IconButton(onClick = { navController.navigateUp() }) {
                         Icon(
                             imageVector = Icons.Filled.ArrowBack,
                             contentDescription = "Back"
@@ -57,13 +55,13 @@ fun UploadImageScreen(
             )
         }
     ) {
-        UploadImageBody(navigator, user)
+        UploadImageBody(navController, user)
     }
 }
 
 @Composable
 fun UploadImageBody(
-    navigator: DestinationsNavigator,
+    navController: NavController,
     user: User,
 ) {
     val context = LocalContext.current
@@ -82,11 +80,11 @@ fun UploadImageBody(
             it.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream)
             fileOutputStream.close()
 
-            navigator.navigate(
-                MultipleCropImageScreenDestination(
-                    user,
-                )
+            navController.currentBackStackEntry?.savedStateHandle?.set(
+                "user",
+                user,
             )
+            navController.navigate(Screen.MultipleCropImageScreen.route)
         }
     }
 
@@ -113,11 +111,11 @@ fun UploadImageBody(
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream)
                 fileOutputStream.close()
 
-                navigator.navigate(
-                    MultipleCropImageScreenDestination(
-                        user,
-                    )
+                navController.currentBackStackEntry?.savedStateHandle?.set(
+                    "user",
+                    user,
                 )
+                navController.navigate(Screen.MultipleCropImageScreen.route)
             }
         }
     }

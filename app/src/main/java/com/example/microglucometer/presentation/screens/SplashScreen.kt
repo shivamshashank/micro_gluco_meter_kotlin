@@ -1,4 +1,4 @@
-package com.example.microglucometer.presentation
+package com.example.microglucometer.presentation.screens
 
 import android.view.animation.OvershootInterpolator
 import androidx.compose.animation.core.Animatable
@@ -19,16 +19,14 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.microglucometer.R
-import com.example.microglucometer.presentation.destinations.RegistrationScreenDestination
-import com.example.microglucometer.ui.theme.Brown700
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.example.microglucometer.presentation.theme.Brown700
+import com.example.microglucometer.utils.Screen
 import kotlinx.coroutines.delay
 
-@Destination(start = true)
 @Composable
-fun SplashScreen(navigator: DestinationsNavigator) {
+fun SplashScreen(navController: NavController) {
     val scale = remember {
         Animatable(0f)
     }
@@ -47,7 +45,7 @@ fun SplashScreen(navigator: DestinationsNavigator) {
         )
         // delay time
         delay(3000L)
-        navigator.navigate(RegistrationScreenDestination)
+        navController.navigate(Screen.RegistrationScreen.route)
     }
 
     Column(

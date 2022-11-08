@@ -1,4 +1,4 @@
-package com.example.microglucometer.presentation
+package com.example.microglucometer.presentation.screens
 
 import android.annotation.SuppressLint
 import android.app.Application
@@ -17,22 +17,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.microglucometer.ui.theme.Brown700
+import androidx.navigation.NavController
+import com.example.microglucometer.presentation.theme.Brown700
 import com.example.microglucometer.view_model.UserDetailViewModel
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
-@Destination
 @Composable
-fun RecordsScreen(navigator: DestinationsNavigator) {
+fun RecordsScreen(navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(text = "Records") },
                 navigationIcon = {
                     IconButton(
-                        onClick = { navigator.navigateUp() }
+                        onClick = { navController.navigateUp() }
                     ) {
                         Icon(
                             imageVector = Icons.Filled.ArrowBack,
@@ -73,7 +71,9 @@ fun RecordsScreenBody() {
                 Card(
                     elevation = 6.dp,
                     border = BorderStroke(1.dp, Brown700),
-                    modifier = Modifier.padding(vertical = 8.dp).fillMaxSize(),
+                    modifier = Modifier
+                        .padding(vertical = 8.dp)
+                        .fillMaxSize(),
                 ) {
                     Column(
                         modifier = Modifier.padding(16.dp),

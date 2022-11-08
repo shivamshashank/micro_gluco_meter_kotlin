@@ -1,4 +1,4 @@
-package com.example.microglucometer.ui.theme
+package com.example.microglucometer.presentation.theme
 
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.lightColors

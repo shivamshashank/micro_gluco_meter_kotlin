@@ -1,4 +1,4 @@
-package com.example.microglucometer.ui.theme
+package com.example.microglucometer.presentation.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes
