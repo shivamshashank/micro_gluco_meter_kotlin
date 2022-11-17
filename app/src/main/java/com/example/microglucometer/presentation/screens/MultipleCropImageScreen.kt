@@ -33,6 +33,7 @@ import com.canhub.cropper.CropImageOptions
 import com.example.microglucometer.models.User
 import com.example.microglucometer.presentation.theme.Brown500
 import com.example.microglucometer.presentation.theme.Brown700
+import com.example.microglucometer.utils.ImageConversion
 import com.example.microglucometer.utils.Screen
 import com.slaviboy.composeunits.dh
 import com.slaviboy.composeunits.dw
@@ -128,9 +129,18 @@ fun MultipleCropImageScreen(
                         } else {
                             val imageMap: HashMap<String, String> =
                                 hashMapOf(
-                                    "image_string1" to crop1.value.toString(),
-                                    "image_string2" to crop2.value.toString(),
-                                    "image_string3" to crop3.value.toString(),
+                                    "image_string1" to ImageConversion().encodeImageFromUri(
+                                        context,
+                                        crop1.value,
+                                    ),
+                                    "image_string2" to ImageConversion().encodeImageFromUri(
+                                        context,
+                                        crop2.value,
+                                    ),
+                                    "image_string3" to ImageConversion().encodeImageFromUri(
+                                        context,
+                                        crop3.value,
+                                    ),
                                 )
 
                             navController.currentBackStackEntry?.savedStateHandle?.set(
@@ -141,7 +151,7 @@ fun MultipleCropImageScreen(
                                 "imageMap",
                                 imageMap,
                             )
-                            navController.navigate(Screen.ReportsScreen.route)
+                            navController.navigate(Screen.RegionOfInterestScreen.route)
                         }
                     },
                     modifier = Modifier

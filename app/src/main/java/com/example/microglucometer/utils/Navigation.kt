@@ -38,7 +38,7 @@ fun Navigation() {
                 }
             }
         }
-        composable(route = Screen.ReportsScreen.route) {
+        composable(route = Screen.RegionOfInterestScreen.route) {
             val user = navController.previousBackStackEntry?.savedStateHandle?.get<User>("user")
             val imageMap =
                 navController.previousBackStackEntry?.savedStateHandle?.get<HashMap<String, String>>(
@@ -46,7 +46,7 @@ fun Navigation() {
                 )
             user?.let {
                 imageMap?.let {
-                    ReportsScreen(navController, user, imageMap)
+                    RegionOfInterestScreen(navController, user, imageMap)
                 }
             }
         }

@@ -26,13 +26,13 @@ class GetConcentrationViewModel @Inject constructor(
             getConcentrationState.tryEmit(GetConcentrationState.LoadingState)
             withContext(Dispatchers.IO) {
                 try {
-                    val concentrationList = apiService.getConcentration(
+                    val concentrationModel = apiService.getConcentration(
                         imageMap["image_string1"]!!,
                         imageMap["image_string2"]!!,
                         imageMap["image_string3"]!!,
                     )
 
-                    getConcentrationState.tryEmit(GetConcentrationState.Success(concentrationList))
+                    getConcentrationState.tryEmit(GetConcentrationState.Success(concentrationModel))
                 } catch (e: Exception) {
                     getConcentrationState.tryEmit(
                         GetConcentrationState.Error(
