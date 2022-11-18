@@ -45,7 +45,9 @@ fun SplashScreen(navController: NavController) {
         )
         // delay time
         delay(0L)
-        navController.navigate(Screen.RegistrationScreen.route)
+        navController.navigate(Screen.RegistrationScreen.route) {
+            popUpTo(0)
+        }
     }
 
     Column(

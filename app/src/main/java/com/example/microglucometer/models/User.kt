@@ -9,5 +9,4 @@ data class User(
     val age: String,
     val gender: String,
     val phoneNumber: String,
-    var concentration: String,
 ) : Parcelable

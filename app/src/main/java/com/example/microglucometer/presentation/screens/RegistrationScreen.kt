@@ -37,7 +37,6 @@ import com.example.microglucometer.utils.Screen
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun RegistrationScreen(navController: NavController) {
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -83,7 +82,7 @@ fun RegistrationForm(navController: NavController) {
         validateAge = if (age.isBlank()) false
         else age.toInt() in 1..99
 
-        validatePhoneNumber = phoneNumber.length == 1
+        validatePhoneNumber = phoneNumber.length == 10
 
         return validateName && validateAge && validatePhoneNumber
     }
@@ -231,7 +230,6 @@ fun RegistrationForm(navController: NavController) {
                                 age,
                                 gender,
                                 phoneNumber,
-                                "",
                             ),
                         )
                         navController.navigate(Screen.UploadImageScreen.route)

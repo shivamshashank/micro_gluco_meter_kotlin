@@ -6,10 +6,10 @@ import androidx.room.Insert
 import androidx.room.Query
 
 @Dao
-interface UserDetailDatabaseDao {
-    @Query("SELECT * from user_detail_list")
-    fun getAll(): LiveData<List<UserDetail>>
+interface RecordDatabaseDao {
+    @Query("SELECT * from record_list")
+    fun getAll(): LiveData<List<Record>>
 
     @Insert
-    suspend fun insert(item: UserDetail)
+    suspend fun insert(item: Record)
 }

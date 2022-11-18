@@ -1,6 +1,7 @@
 package com.example.microglucometer.presentation.screens
 
 import android.annotation.SuppressLint
+import android.app.Application
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -9,6 +10,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Folder
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -18,6 +20,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
@@ -28,7 +31,9 @@ import com.example.microglucometer.models.User
 import com.example.microglucometer.presentation.state.GetConcentrationState
 import com.example.microglucometer.presentation.theme.Brown500
 import com.example.microglucometer.utils.ImageConversion
+import com.example.microglucometer.utils.Screen
 import com.example.microglucometer.view_model.GetConcentrationViewModel
+import com.example.microglucometer.view_model.RecordViewModel
 import com.slaviboy.composeunits.dh
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -39,9 +44,10 @@ fun RegionOfInterestScreen(
     imageMap: HashMap<String, String>,
 ) {
 
-    val viewModel = hiltViewModel<GetConcentrationViewModel>()
+    val concentrationViewModel = hiltViewModel<GetConcentrationViewModel>()
+    val recordViewModel = RecordViewModel(LocalContext.current.applicationContext as Application)
 
-    viewModel.getConcentration(imageMap)
+    concentrationViewModel.getConcentration(imageMap)
 
     Scaffold(
         topBar = {
@@ -60,15 +66,35 @@ fun RegionOfInterestScreen(
                 actions = {
                     IconButton(
                         onClick = {
+                            navController.navigate(Screen.RecordsScreen.route) {
+                                popUpTo(Screen.RegistrationScreen.route)
+                            }
                         },
                     ) {
-                        Icon(Icons.Filled.Add, "Records")
+                        Icon(Icons.Filled.Folder, "Records")
                     }
                 }
             )
         },
+        floatingActionButton = {
+            FloatingActionButton(
+                backgroundColor = Brown500,
+                onClick = {
+                    navController.navigate(Screen.RegistrationScreen.route) {
+                        popUpTo(0)
+                    }
+                },
+                content = {
+                    Icon(
+                        Icons.Filled.Add,
+                        "Add New Record",
+                        tint = Color.White,
+                    )
+                }
+            )
+        },
     ) {
-        val getConcentrationState by viewModel.getConcentrationState.collectAsState()
+        val getConcentrationState by concentrationViewModel.getConcentrationState.collectAsState()
 
         when (getConcentrationState) {
             is GetConcentrationState.LoadingState -> {
@@ -82,6 +108,8 @@ fun RegionOfInterestScreen(
             is GetConcentrationState.Success -> {
                 val concentration =
                     (getConcentrationState as GetConcentrationState.Success).concentrationModel
+
+                recordViewModel.addRecord(user, concentration)
 
                 Column(
                     verticalArrangement = Arrangement.SpaceEvenly,
@@ -118,7 +146,7 @@ fun RegionOfInterestScreen(
 }
 
 @Composable
-fun ImageAndText(regionOfInterest: String, concentration: String) {
+private fun ImageAndText(regionOfInterest: String, concentration: String) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly,
